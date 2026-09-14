@@ -1,5 +1,9 @@
 from django.urls import path
+from myproject.myproject import settings
 from . import views
+from django.conf import settings
+from django.urls import path, re_path
+from django.views.static import serve
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -18,4 +22,6 @@ urlpatterns = [
     path('reports/', views.report_view, name='reports'),
     path('ess/', views.ess_dashboard, name='ess_dashboard'),
 ]
-
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
