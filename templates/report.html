@@ -1,0 +1,27 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">📊 รายงานภาพรวมและเอกสารราชการ (Reports)</h3>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white p-3 shadow-sm">
+                <h6>ยอดจ่ายเงินเดือนรวม</h6>
+                <h3>{{ total_salary|floatformat:2 }} บาท</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark p-3 shadow-sm">
+                <h6>ยอดส่งประกันสังคมรวม (สปส. 1-10)</h6>
+                <h3>{{ total_sso|floatformat:2 }} บาท</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white p-3 shadow-sm">
+                <h6>ยอดภาษีหัก ณ ที่จ่าย (ภ.ง.ด.1)</h6>
+                <h3>{{ total_tax|floatformat:2 }} บาท</h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

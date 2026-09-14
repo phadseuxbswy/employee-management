@@ -1,0 +1,109 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4 text-primary">📱 พอร์ทัลพนักงาน (Employee Self-Service)</h2>
+
+    <div class="row g-4">
+        <!-- การ์ด 1: ลงเวลาทำงาน -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0 border-top border-4 border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">⏱️ ระบบลงเวลา (Clock-In/Out)</h5>
+                    <p class="text-muted small">ระบบจะบันทึกเวลาพร้อมแนบพิกัด GPS ปัจจุบัน</p>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <select name="employee_id" class="form-select mb-3" required>
+                            <option value="">-- ยืนยันตัวตน (เลือกชื่อคุณ) --</option>
+                            {% for emp in employees %}
+                                <option value="{{ emp.id }}">{{ emp.first_name }} {{ emp.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="d-grid gap-2 d-md-block">
+                            <button type="submit" name="action" value="check_in" class="btn btn-success px-4 py-2">🟢 เข้างาน (Check-in)</button>
+                            <button type="submit" name="action" value="check_out" class="btn btn-danger px-4 py-2">🔴 ออกงาน (Check-out)</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- การ์ด 2: ส่งคำขอ (ลา/เบิก) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0 border-top border-4 border-warning">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-center">📝 ยื่นคำขอ / แนบเอกสาร</h5>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="submit_request">
+                        
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <select name="employee_id" class="form-select" required>
+                                    <option value="">-- เลือกชื่อพนักงาน --</option>
+                                    {% for emp in employees %}<option value="{{ emp.id }}">{{ emp.first_name }}</option>{% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select name="request_type" class="form-select" required>
+                                    <option value="leave">ขอลาหยุด</option>
+                                    <option value="ot">ขอทำ OT</option>
+                                    <option value="expense">เบิกค่าใช้จ่าย</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <input type="text" name="title" class="form-control mb-2" placeholder="รายละเอียด (เช่น ลาป่วย, ค่าเดินทาง)" required>
+                        <input type="number" name="amount" class="form-control mb-2" placeholder="จำนวน (เช่น จำนวนวันลา, ค่าใช้จ่ายเบิก)" step="0.01">
+                        
+                        <label class="form-label small text-muted mb-1">แนบรูปภาพ (ใบเสร็จ/ใบรับรองแพทย์):</label>
+                        <input type="file" name="attachment" class="form-control mb-3" accept="image/*,.pdf">
+                        
+                        <button type="submit" class="btn btn-warning w-100 fw-bold">ส่งคำขอให้ HR อนุมัติ 🚀</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ประวัติคำขอ -->
+    <h5 class="fw-bold mt-5 mb-3">🕒 ประวัติคำขอของฉัน</h5>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th>วันที่</th>
+                    <th>พนักงาน</th>
+                    <th>ประเภท</th>
+                    <th>รายละเอียด</th>
+                    <th>ไฟล์แนบ</th>
+                    <th>สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in recent_requests %}
+                <tr>
+                    <td>{{ req.created_at|date:"d/m/Y" }}</td>
+                    <td>{{ req.employee.first_name }}</td>
+                    <td>{{ req.get_request_type_display }}</td>
+                    <td>{{ req.title }}</td>
+                    <td>
+                        {% if req.attachment %}
+                            <a href="{{ req.attachment.url }}" target="_blank" class="badge bg-primary text-decoration-none">ดูเอกสาร</a>
+                        {% else %}
+                            <span class="text-muted small">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if req.status == 'approved' %}<span class="badge bg-success">อนุมัติแล้ว</span>
+                        {% elif req.status == 'rejected' %}<span class="badge bg-danger">ไม่อนุมัติ</span>
+                        {% else %}<span class="badge bg-warning text-dark">รออนุมัติ</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

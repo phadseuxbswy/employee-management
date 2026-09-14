@@ -1,0 +1,10 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="post" enctype="multipart/form-data" class="mt-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+    <a href="{% url 'index' %}" class="btn btn-secondary">ยกเลิก</a>
+</form>
+{% endblock %}

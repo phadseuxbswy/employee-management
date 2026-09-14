@@ -1,0 +1,97 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center fw-bold mb-4">รายชื่อพนักงาน</h2>
+
+    <!-- ส่วนค้นหา และ ปุ่มเพิ่มพนักงาน -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <form method="GET" class="d-flex shadow-sm">
+                <input type="text" name="q" class="form-control me-2" placeholder="ค้นหาชื่อ, แผนก..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary px-4">ค้นหา</button>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            {% if perms.myapp.add_employee %}
+            <a href="{% url 'create' %}" class="btn btn-success shadow-sm">+ เพิ่มพนักงาน</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ส่วนแสดงข้อมูลแบบ Card Grid (4 คอลัมน์) -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-4">
+        {% for emp in page_obj %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <!-- รูปภาพ (แสดงด้านบนสุดของการ์ด) -->
+                {% if emp.photo %}
+                    <img src="{{ emp.photo.url }}" class="card-img-top" alt="รูปพนักงาน" style="height: 180px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 180px; font-size: 4rem;">
+                        👤
+                    </div>
+                {% endif %}
+
+                <!-- ข้อมูลส่วนหัวของการ์ด -->
+                <div class="card-body pb-1">
+                    <h6 class="card-title fw-bold mb-1">
+                        <a href="{% url 'detail' emp.pk %}" class="text-decoration-none text-dark">
+                            {{ emp.title }}{{ emp.first_name }} {{ emp.last_name }}
+                        </a>
+                    </h6>
+                    <p class="card-text text-muted small mb-2">
+                        ที่อยู่ : {{ emp.address|default:"-"|truncatechars:25 }}
+                    </p>
+                </div>
+
+                <!-- ข้อมูลรายละเอียดย่อย (ใช้ List Group ไม่มีเส้นขอบ) -->
+                <ul class="list-group list-group-flush small text-muted">
+                    <li class="list-group-item py-1 border-0">เพศ : {{ emp.get_gender_display }}</li>
+                    <li class="list-group-item py-1 border-0">วันเกิด : {{ emp.birth_date|date:"d M. Y" }}</li>
+                    <li class="list-group-item py-1 border-0">แผนก : {{ emp.get_department_display }}</li>
+                    <li class="list-group-item py-1 border-0">เงินเดือน : {{ emp.salary }} บาท</li>
+                </ul>
+
+                <!-- ปุ่มจัดการ (แก้ไข / ลบ) ไว้ล่างสุดของการ์ด -->
+                <div class="card-footer bg-white border-top-0 pt-0 pb-3">
+                    {% if perms.myapp.change_employee %}
+                        <a href="{% url 'update' emp.pk %}" class="btn btn-sm btn-outline-warning border-0 fs-5" title="แก้ไข">📝</a>
+                    {% endif %}
+                    {% if perms.myapp.delete_employee %}
+                        <a href="{% url 'delete' emp.pk %}" class="btn btn-sm btn-outline-danger border-0 fs-5" title="ลบ">🗑️</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted my-5">
+            <h5 class="fw-light">ไม่พบข้อมูลพนักงาน</h5>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- ระบบแบ่งหน้า (Pagination) -->
+    <div class="d-flex justify-content-center mt-4 mb-5 align-items-center">
+        
+        <!-- ปุ่มก่อนหน้า -->
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-outline-secondary me-2 shadow-sm">
+                &laquo; ก่อนหน้า
+            </a>
+        {% endif %}
+
+        <!-- หน้าปัจจุบัน -->
+        <span class="badge bg-light text-dark border p-2 px-4 shadow-sm fs-6">
+            หน้า {{ page_obj.number|default:"1" }} จาก {{ page_obj.paginator.num_pages|default:"1" }}
+        </span>
+
+        <!-- ปุ่มถัดไป -->
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-outline-secondary ms-2 shadow-sm">
+                ถัดไป &raquo;
+            </a>
+        {% endif %}
+        
+    </div>
+</div>
+{% endblock %}

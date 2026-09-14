@@ -1,0 +1,31 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">เข้าสู่ระบบ</h4>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form method="POST">
+                        {% csrf_token %}  <!-- 🌟 พระเอกของเราคือบรรทัดนี้ครับ -->
+                        
+                        {{ form.as_p }}
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary fw-bold">เข้าสู่ระบบ</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{% url 'register' %}" class="text-decoration-none">ยังไม่มีบัญชี? สมัครสมาชิกที่นี่</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

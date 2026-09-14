@@ -1,0 +1,50 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">⏱️ บันทึกเวลาทำงาน (Time Attendance)</h3>
+    
+    <!-- ฟอร์มสแกน / ลงเวลา -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <h5>ลงเวลาเข้า - ออกงาน</h5>
+        <form method="POST" class="row g-3 align-items-center">
+            {% csrf_token %}
+            <div class="col-md-5">
+                <select name="employee_id" class="form-select" required>
+                    <option value="">-- เลือกชื่อพนักงาน --</option>
+                    {% for emp in employees %}
+                        <option value="{{ emp.id }}">{{ emp.first_name }} {{ emp.last_name }} ({{ emp.get_department_display }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-7">
+                <button type="submit" name="action" value="check_in" class="btn btn-success me-2">เข้างาน (Check-in)</button>
+                <button type="submit" name="action" value="check_out" class="btn btn-danger">ออกงาน (Check-out)</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ตารางประวัติการลงเวลา -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>วันที่</th>
+                <th>พนักงาน</th>
+                <th>เวลาเข้างาน</th>
+                <th>เวลาออกงาน</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for att in attendances %}
+            <tr>
+                <td>{{ att.date }}</td>
+                <td>{{ att.employee }}</td>
+                <td><span class="text-success">{{ att.check_in|default:"-" }}</span></td>
+                <td><span class="text-danger">{{ att.check_out|default:"-" }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center text-muted">ยังไม่มีบันทึกเวลา</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

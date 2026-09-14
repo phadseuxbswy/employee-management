@@ -1,0 +1,85 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-0">
+            <div class="card-header bg-info text-white text-center">
+                <h4 class="mb-0">รายละเอียดข้อมูลพนักงาน</h4>
+            </div>
+            <div class="card-body text-center mt-3">
+                
+                <!-- ส่วนรูปภาพและข้อมูลหลัก -->
+                {% if employee.photo %}
+                    <img src="{{ employee.photo.url }}" width="150" height="150" class="rounded-circle mb-3 shadow" style="object-fit: cover; border: 3px solid #0dcaf0;">
+                {% else %}
+                    <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 150px; height: 150px; font-size: 3rem;">
+                        👤
+                    </div>
+                {% endif %}
+                <h3>{{ employee.first_name }} {{ employee.last_name }}</h3>
+                <p class="text-muted mb-4"><span class="badge bg-info text-dark fs-6">{{ employee.get_department_display }}</span></p>
+                
+                <!-- ส่วนข้อมูลส่วนบุคคลทั้งหมด -->
+                <div class="text-start px-md-5 px-3">
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">เพศ</div>
+                        <div class="col-sm-8 fw-bold">{{ employee.get_gender_display }}</div>
+                    </div>
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">วันเกิด</div>
+                        <div class="col-sm-8">{{ employee.birth_date }}</div>
+                    </div>
+                    <!-- เพิ่มวันที่เริ่มทำงานเข้ามาตรงนี้ -->
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">วันที่เริ่มทำงาน</div>
+                        <div class="col-sm-8">{{ employee.hire_date|default:"-" }}</div>
+                    </div>
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">ตำแหน่ง</div>
+                        <div class="col-sm-8">{{ employee.position|default:"-" }}</div>
+                    </div>
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">สถานะพนักงาน</div>
+                        <div class="col-sm-8">
+                            {% if employee.status == 'active' %}
+                                <span class="badge bg-success">ทำงานอยู่</span>
+                            {% elif employee.status == 'probation' %}
+                                <span class="badge bg-warning text-dark">ทดลองงาน</span>
+                            {% elif employee.status == 'resigned' %}
+                                <span class="badge bg-danger">ลาออก</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">เงินเดือน</div>
+                        <div class="col-sm-8 text-success fw-bold">{{ employee.salary }} บาท</div>
+                    </div>
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">เบอร์โทรศัพท์</div>
+                        <div class="col-sm-8">{{ employee.phone_number|default:"-" }}</div>
+                    </div>
+                    <div class="row mb-3 border-bottom pb-2">
+                        <div class="col-sm-4 text-muted">บัญชีธนาคาร</div>
+                        <div class="col-sm-8">
+                            {% if employee.bank_name %}
+                                {{ employee.get_bank_name_display }}<br>
+                            {% endif %}
+                            <span class="text-primary">{{ employee.bank_account|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- ปุ่มจัดการ -->
+            <div class="card-footer text-center py-3 bg-light">
+                <a href="{% url 'index' %}" class="btn btn-secondary px-4 me-2">กลับหน้าหลัก</a>
+                {% if perms.myapp.change_employee %}
+                    <a href="{% url 'update' employee.pk %}" class="btn btn-warning px-4">แก้ไขข้อมูล</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

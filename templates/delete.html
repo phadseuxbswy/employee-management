@@ -1,0 +1,10 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<h2>ยืนยันการลบข้อมูล</h2>
+<p>คุณต้องการลบพนักงาน <strong>{{ employee.first_name }} {{ employee.last_name }}</strong> ใช่หรือไม่?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">ยืนยันการลบ</button>
+    <a href="{% url 'index' %}" class="btn btn-secondary">ยกเลิก</a>
+</form>
+{% endblock %}

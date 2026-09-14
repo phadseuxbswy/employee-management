@@ -1,0 +1,32 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">💰 การคำนวณเงินเดือน (Payroll)</h3>
+        <a href="{% url 'export_bank_file' %}" class="btn btn-primary">📥 ดาวน์โหลด Text File สำหรับธนาคาร</a>
+    </div>
+
+    <table class="table table-bordered shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>พนักงาน</th>
+                <th>เงินเดือนตั้งต้น</th>
+                <th>หักประกันสังคม (5%)</th>
+                <th>หักภาษี (3%)</th>
+                <th class="table-success">ยอดสุทธิที่ได้รับ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in payrolls %}
+            <tr>
+                <td>{{ p.employee }}</td>
+                <td>{{ p.base|floatformat:2 }} บาท</td>
+                <td class="text-danger">-{{ p.sso|floatformat:2 }} บาท</td>
+                <td class="text-danger">-{{ p.tax|floatformat:2 }} บาท</td>
+                <td class="fw-bold text-success">{{ p.net|floatformat:2 }} บาท</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card shadow border-danger">
+            <div class="card-body py-5">
+                <h1 class="display-1 text-danger fw-bold">403</h1>
+                <h3 class="text-danger mb-3">ขออภัย คุณไม่มีสิทธิ์เข้าถึงหน้านี้</h3>
+                <p class="text-muted mb-4">บัญชีของคุณเป็นสมาชิกทั่วไป (Member) จึงไม่สามารถใช้งานฟังก์ชันเพิ่มหรือแก้ไขข้อมูลได้ กรุณาติดต่อผู้ดูแลระบบหากต้องการสิทธิ์เพิ่มเติม</p>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">กลับสู่หน้าแดชบอร์ด</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

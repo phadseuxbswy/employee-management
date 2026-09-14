@@ -1,0 +1,64 @@
+{% extends 'basetemplate.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>แดชบอร์ดสรุปข้อมูลระบบพนักงาน</h2>
+            <p class="text-muted">ยินดีต้อนรับเข้าสู่ระบบจัดการพนักงาน, <strong>{{ user.username }}</strong></p>
+        </div>
+    </div>
+
+    <!-- การ์ดแสดงสถิติรวม -->
+    <div class="row text-white mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card bg-primary shadow">
+                <div class="card-body">
+                    <h5>จำนวนพนักงานทั้งหมด</h5>
+                    <h2>{{ total_employees }} คน</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card bg-success shadow">
+                <div class="card-body">
+                    <h5>เงินเดือนเฉลี่ย</h5>
+                    <h2>{{ avg_salary|floatformat:2 }} บาท</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ตารางสรุปแยกตามแผนก -->
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">สถิติพนักงานแยกตามแผนก</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>แผนก</th>
+                        <th>จำนวนพนักงาน (คน)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in dept_counts %}
+                    <tr>
+                        <td>{{ item.department }}</td>
+                        <td>{{ item.total }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center">ยังไม่มีข้อมูลพนักงาน</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'index' %}" class="btn btn-secondary">จัดการรายชื่อพนักงานทั้งหมด</a>
+    </div>
+</div>
+{% endblock %}
