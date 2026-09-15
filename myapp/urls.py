@@ -1,9 +1,7 @@
-from django.urls import path
-from django.conf import settings
-from . import views
-from django.conf import settings
 from django.urls import path, re_path
+from django.conf import settings
 from django.views.static import serve
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -21,7 +19,12 @@ urlpatterns = [
     path('payroll/export-bank/', views.export_bank_file, name='export_bank_file'),
     path('reports/', views.report_view, name='reports'),
     path('ess/', views.ess_dashboard, name='ess_dashboard'),
+    
+    # 🟢 เพิ่มบรรทัดนี้สำหรับเมนูจัดการ OT ครับ
+    path('ot-management/', views.ot_management, name='ot_management'),
 ]
+
+# สำหรับแสดงรูปภาพในโหมด Production (Render)
 urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

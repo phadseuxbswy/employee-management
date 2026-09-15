@@ -309,3 +309,10 @@ def ess_dashboard(request):
         'employees': employees, 
         'recent_requests': recent_requests
     })
+    
+    # ================= ระบบจัดการ OT =================
+@login_required
+@user_passes_test(is_admin, login_url='ess_dashboard')
+def ot_management(request):
+            employees = Employee.objects.all()   
+            return render(request, 'ot_management.html', {'employees': employees})
