@@ -41,7 +41,7 @@
                             <div class="col-6">
                                 <select name="employee_id" class="form-select" required>
                                     <option value="">-- เลือกชื่อพนักงาน --</option>
-                                    {% for emp in employees %}<option value="{{ emp.id }}">{{ emp.first_name }}</option>{% endfor %}
+                                    {% for emp in employees %}<option value="{{ emp.id }}">{{ emp.title }}{{ emp.first_name }} {{ emp.last_name }}</option>{% endfor %}
                                 </select>
                             </div>
                             <div class="col-6">
